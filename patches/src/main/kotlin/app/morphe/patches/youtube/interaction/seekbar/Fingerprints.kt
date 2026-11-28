@@ -406,3 +406,48 @@ internal object PreciseSeekingRecyclerViewFingerprint : Fingerprint (
         opcode(opcode = Opcode.RETURN_VOID, location = MatchAfterImmediately())
     )
 )
+
+/**
+ * Where a progress update of the player seekbar copies the played part for drawing.
+ * The first instruction match reads the drawing state of the seekbar,
+ * and the last one sets the copy of the played part.
+ */
+internal object SeekbarCopyPlayedRectFingerprint : Fingerprint(
+    classFingerprint = SeekbarFingerprint,
+    returnType = "V",
+    parameters = listOf(),
+    filters = listOf(
+        fieldAccess(opcode = Opcode.IGET_OBJECT, definingClass = "this"),
+        fieldAccess(
+            opcode = Opcode.IPUT_OBJECT,
+            type = "Landroid/graphics/Rect;",
+            location = MatchAfterImmediately()
+        ),
+        newInstance("Landroid/graphics/Rect;", location = MatchAfterImmediately()),
+        methodCall(
+            smali = "Landroid/graphics/Rect;-><init>(Landroid/graphics/Rect;)V",
+            location = MatchAfterImmediately()
+        ),
+        fieldAccess(
+            opcode = Opcode.IPUT_OBJECT,
+            type = "Landroid/graphics/Rect;",
+            location = MatchAfterImmediately()
+        )
+    )
+)
+
+/**
+ * The player seekbar drawing: where the drawing starts after the checks that skip it,
+ * and the x of the thumb, kept between the ends of the seekbar.
+ */
+internal object SeekbarOnDrawThumbXFingerprint : Fingerprint(
+    classFingerprint = SeekbarFingerprint,
+    name = "onDraw",
+    filters = listOf(
+        methodCall(smali = "Landroid/graphics/Canvas;->save()I"),
+        fieldAccess(opcode = Opcode.IGET, definingClass = "this", type = "I"),
+        methodCall(smali = "Ljava/lang/Math;->max(II)I", location = MatchAfterImmediately()),
+        opcode(Opcode.MOVE_RESULT, location = MatchAfterImmediately()),
+        methodCall(smali = "Ljava/lang/Math;->min(II)I", location = MatchAfterImmediately())
+    )
+)
