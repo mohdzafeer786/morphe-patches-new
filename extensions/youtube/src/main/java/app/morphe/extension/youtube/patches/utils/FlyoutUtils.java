@@ -73,6 +73,7 @@ import app.morphe.extension.youtube.patches.PictureinPictureButtonPatch;
 import app.morphe.extension.youtube.patches.PostImageDownloadPatch;
 import app.morphe.extension.youtube.patches.PostTranslatePatch;
 import app.morphe.extension.youtube.patches.SaveToWatchLaterPatch;
+import app.morphe.extension.youtube.patches.ShortsAutoplayPatch;
 import app.morphe.extension.youtube.patches.VideoDelayPatch;
 import app.morphe.extension.youtube.patches.VideoInformation;
 import app.morphe.extension.youtube.patches.ghostplay.GhostPlayPatch;
@@ -514,7 +515,7 @@ public final class FlyoutUtils {
 
             // The items are measured for the first time when the scroll view is measured, and the menu
             // may not measure the scroll view again, so the items are measured before its height is chosen.
-            // Otherwise the minimum height is zero, and the height depends on the space left by the
+            // Otherwise, the minimum height is zero, and the height depends on the space left by the
             // other items, which can be less than one item.
             if (itemsContainer.getMeasuredHeight() == 0) {
                 measureChild(itemsContainer, widthMeasureSpec, heightMeasureSpec);
@@ -624,7 +625,7 @@ public final class FlyoutUtils {
     );
     private static final int ITEM_TEXT_ID = ResourceUtils.getIdentifier(
             ResourceType.ID, "list_item_text");
-    private static final StringRef LOADING_BUTTON_TEXT = StringRef.sfc("morphe_flyout_button_loading");
+    private static final StringRef LOADING_BUTTON_TEXT = StringRef.sfc("morphe_loading");
 
     private static final List<WeakReference<TextView>> customItemTextRefs = new ArrayList<>();
 
@@ -927,7 +928,7 @@ public final class FlyoutUtils {
         }
         isShortsPlayerFlyout = false;
         // Moving the list of the player menu binds its items again, after the field was reset.
-        // Otherwise the next menu is treated as the player menu.
+        // Otherwise, the next menu is treated as the player menu.
         PlayerFlyoutMenuComponentsFilter.resetTopFlyoutMenuVisible();
     }
 
@@ -997,6 +998,10 @@ public final class FlyoutUtils {
         if (ShortsPlaybackSpeedFlyoutPatch.isPatchIncluded()
                 && ShortsPlaybackSpeedFlyoutPatch.showFlyoutButton()) {
             nextButtonIndex = ShortsPlaybackSpeedFlyoutPatch.addFlyoutButton(flyoutPanel, nextButtonIndex);
+        }
+
+        if (ShortsAutoplayPatch.isPatchIncluded()) {
+            nextButtonIndex = ShortsAutoplayPatch.addFlyoutButton(flyoutPanel, nextButtonIndex);
         }
 
         final String flyoutVideoId = getFlyoutVideoId();

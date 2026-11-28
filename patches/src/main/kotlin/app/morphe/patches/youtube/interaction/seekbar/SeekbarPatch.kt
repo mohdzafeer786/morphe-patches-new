@@ -13,6 +13,7 @@ val seekbarPatch = patch(
             "hiding the video player seekbar, " +
             "enabling seeking in live streams, " +
             "customizing the seekbar thumb with an image or GIF, " +
+            "moving the seekbar progress continuously, " +
             "and expanding the live stream DVR duration."
 ) {
     dependsOn(
@@ -22,7 +23,8 @@ val seekbarPatch = patch(
         enableTapToSeekPatch,
         hideSeekbarPatch,
         liveStreamDVRPatch,
-        seekbarThumbnailPreviewPatch
+        seekbarThumbnailPreviewPatch,
+        smoothSeekbarPatch
     )
 
     compatibleWith(COMPATIBILITY_YOUTUBE)
